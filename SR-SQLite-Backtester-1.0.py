@@ -31,7 +31,7 @@ stocklist = stocklist[0:300] #Limit test to first x stocks in test universe
 
 
 
-#-------------------- Parameters for the backtest---------------------
+#-------------------- Parameters for the backtest--------------------------------
 startdate = "'2016-01-01'"
 enddate = "'2021-09-09'"
 direction = "short" #"short"/"long"
@@ -172,7 +172,7 @@ print("resultsDataFrame:")
 print(resultsDataFrame.head(20)) #Print first x rows of resultsdataframe for visual inspection
 
 
-#--------------------- Preparing data for presentation ----------------------------------------------------------------
+#--------------------- Preparing data for presentation ---------------------------------------------------
 #Variables for analysis of results
 try:
     NumberTradingDays = len(df) #wrong if last stock tested doesn't have date for entire backtest period
@@ -215,7 +215,7 @@ except:
 
 
 
-#--------------------- Presentation of data ----------------------------------------------------------------------------
+#--------------------- Presentation of data -------------------------------------------------------------------
 
 #Print the two dataframes holding parameter settings and results
 try:
@@ -249,7 +249,7 @@ plt.show()
 
 
 
-#--------------------- Logging results to CSV ---------------------------------------------------------------------------
+#--------------------- Logging results to CSV ----------------------------------------------------------
 try:
     pd.DataFrame.to_csv(Logdataframe,r"C:\Users\LENOVO\desktop\csvlogfilename.csv",mode="a",header=True,index=False)
     #Logdataframe.to_excel(r"C:\Users\LENOVO\desktop\11martsBacktesting2.xlsx",index=False, header=False,mode="a")
@@ -260,7 +260,6 @@ except:
 
 
 #--------------------------- Scrap code --------------------------------------------------------
-'''
         
 
 #-------------- Check data for resultsdataframe ---------------------
