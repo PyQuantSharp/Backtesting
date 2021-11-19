@@ -7,7 +7,7 @@ This is a simple backtesting script written in python. This is in no way optimiz
 Current performance on my Lenovo T450s: Going through 1800 stocks over a 5 years of daily data takes ~8 minutes.
 
 
-##Upcoming changes in rough order of priority
+## Upcoming changes in rough order of priority
 
 1) Improve speed - at first by implementing vectorization in the main function (version 2.0)
 2) Implement commission and slippage - simulate realistic trading
@@ -16,6 +16,6 @@ Current performance on my Lenovo T450s: Going through 1800 stocks over a 5 years
 5) Expand strategy evaluation - add Sharp/Sortino ratio etc, different levels of risk exposure 
  
 
-##Version 2 versus 1
+## Version 2 versus 1
 V-E-C-T-O-R-I-Z-A-T-I-O-N
 
