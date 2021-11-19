@@ -4,7 +4,7 @@
 ## Status as of 11.11.2021 - version 1.0
 
 This is a simple backtesting script written in python. This is in no way optimized for speed (see notes below).
-Current performance on my Lenovo T450s: Going through 1800 stocks over a 5 years of daily data takes ~8 minutes.
+Current performance on my Lenovo T450s: Going through 1800 stocks over 5 years of daily data takes ~8 minutes.
 
 
 ## Upcoming changes in rough order of priority
