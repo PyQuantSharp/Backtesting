@@ -1,6 +1,5 @@
 # Backtesting
 
-https://github.com/hollowheights/Backtesting/blob/main/README.md#version-2-versus-1
 
 
 ## Status as of 11.11.2021 - version 1.0
