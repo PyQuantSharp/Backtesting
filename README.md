@@ -32,14 +32,6 @@ Pros:
 
 Results
 
-Stocks tested | Version 1 | Version 2
--------------   ---------   ---------
-100
-200
-300
-400
-500
-600
 
 
 | Stocks tested | Version 1    | Version 2    |
@@ -50,23 +42,4 @@ Stocks tested | Version 1 | Version 2
 | 400           | 82.77        | 15.62        |
 | 500           | 102.14       | 17.43        |
 | 600           | 131.92       | 19.30        |
-
-
-
-Version1
-100: 20.46
-200: 49.59
-300: 75.47
-400: 82.77
-500: 102.14
-600: 131.92
-
-Version2
-100: 3.90
-200: 6.28
-300: 11.45
-400: 15.62
-500: 17.43
-600:  19.3![image](https://user-images.githubusercontent.com/36546351/143241486-dc7d1330-be03-4106-8a4a-6e09dd45575f.png)
-
 
