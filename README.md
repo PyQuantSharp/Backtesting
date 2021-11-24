@@ -14,13 +14,20 @@ Current performance on my Lenovo T450s: Going through 1800 stocks over 5 years o
 
 - [x] 1) Improve speed - at first by implementing vectorization in the main function (version 2.0)
 - [ ] 2) Implement commission and slippage - simulate realistic trading
-- [ ] 3) Add a stop loss condition (static or dynamic) to limit downside, esp. important for small cap short positions
-- [ ] 4) Improve the measure of volatility - currently the script uses the average of entire testperiod thus "looking ahead"
-- [ ] 5) Expand strategy evaluation - add Sharp/Sortino ratio etc, different levels of risk exposure 
-
+- [ ] 3) Add a stop loss condition (static or dynamic) to limit downside, esp. important for small cap short positions 
+- [ ] 4) Add functionality to test long trades (currently only short positions) 
+- [ ] 5) Improve the measure of volatility - currently the script uses the average of entire testperiod thus "looking ahead"
+- [ ] 6) Expand strategy evaluation - add Sharp/Sortino ratio etc, different levels of risk exposure 
+- [ ] 7) Add dynamic position sizing based on the historic volatility of each stock
 
 ## Version 2 versus version 1
 
+The table of individual simulated trades 'resultsdataframe' and the eponymous 'Logdataframe' have the same structure as in version 1.
+The basic plotting and logging is also kept exactly as in version 1.
+
+The easy solution here would have been to make it quite different, but setting it up in this way makes for easy comparison.
+
+The different lies in the main function which leads to...
 
 ### Performance comparison
 
@@ -31,10 +38,10 @@ This test was done by using datetime.now() which is sometimes considered bad pra
 The time to run throught the script is of such a magnitude than small inaccuracies don't affect the conclusions significantly.
 
 Cons:
-It is not very exact
+* It is not very exact
 
 Pros:
-It shows an actual usecase
+* It shows an actual usecase
 
 
 #### Results
