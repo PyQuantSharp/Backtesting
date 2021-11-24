@@ -62,6 +62,5 @@ Pros:
 | 600           | 131.92       | 19.30        |
 
 
-
 ![Comparison chart](https://i.ibb.co/pr4h6xX/SR-Backtesting-speed-comparison.png)
 
