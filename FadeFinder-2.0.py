@@ -12,7 +12,7 @@ from scipy.stats.mstats import gmean
 #-------------- Set up test universe - loaded from local SQLite database ----------------------
 
 #connect to SQLite database
-connect = sqlite3.connect("SRUSListedVersion2.db")
+connect = sqlite3.connect("DBNAME.db")
 
 #create a cursor
 c = connect.cursor()
@@ -205,7 +205,7 @@ plt.show()
 
 try:
     #Testresults added to previous results
-    #pd.DataFrame.to_csv(Logdataframe,r"C:\Users\LENOVO\desktop\testfilmarts2.csv",mode="a",header=True,index=False)
+    #pd.DataFrame.to_csv(Logdataframe,r"C:\Users\LENOVO\desktop\PATH-TO-FILE",mode="a",header=True,index=False)
 
     #Store latest instance of resultsdataframe temporary - useful when comparing versions
     with pd.ExcelWriter("resultsdataframe.xlsx") as writer:
