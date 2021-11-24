@@ -2,9 +2,11 @@
 
 ## About this repository
 
-This is a simple backtesting script written in python. It is in no way optimized for speed (see notes below).
-Current performance on my Lenovo T450s: Going through 1800 stocks over 5 years of daily data takes ~8 minutes.
+This is for sharing ideas and for easy code sharing across forums.
 
+Currently only holding the "FadeFinder" (had to have some name) - simple backtesting script written in python. 
+
+It was in no way optimized for speed in version 1 (see notes below) but is now quite useful in my objectively biased opinion.
 
 ## Status as of 11.11.2021 - version 1.0
 
@@ -39,9 +41,11 @@ The time to run throught the script is of such a magnitude than small inaccuraci
 
 Cons:
 * It is not very exact
+* The entire script is tested at once so it's not immediately clear what causes the difference
 
 Pros:
-* It shows an actual usecase
+* It is very simple
+* It shows an actual usecase instead of teoretic aspect/part of a larger whole
 
 
 #### Results
@@ -63,4 +67,14 @@ Pros:
 
 
 ![Comparison chart](https://i.ibb.co/pr4h6xX/SR-Backtesting-speed-comparison.png)
+
+
+#### The effect of this in actual use
+
+When sharing version 1 I wrote:
+Current performance on my Lenovo T450s: Going through 1800 stocks over 5 years of daily data takes ~8 minutes.
+
+That was getting very bothersome and now I can run the script through about 4500 stocks in ~3 minutes.
+There is no reason to go back to version 1 other than for trying to understand the deeper logic of Python.
+Performance wise it is too slow for larger datasets and version leads to exactly the same data. 
 
