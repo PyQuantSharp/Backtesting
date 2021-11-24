@@ -42,11 +42,11 @@ Stocks tested | Version 1 | Version 2
 600
 
 
-| Left-Aligned  | Center Aligned  | Right Aligned |
-| :------------ |:---------------:| -----:|
-| col 3 is      | some wordy text | $1600 |
-| col 2 is      | centered        |   $12 |
-| zebra stripes | are neat        |    $1 |
+| Stocks tested | Version 1    | Version 2    |
+| :------------ |:------------:| ------------:|
+| 100           | 10.20        | 12.21        |
+| 200           | 12.12        | 12.12        |
+| 300           | 34.34        | 12.12        |
 
 
 
