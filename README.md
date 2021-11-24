@@ -17,21 +17,30 @@ Current performance on my Lenovo T450s: Going through 1800 stocks over 5 years o
 5) Expand strategy evaluation - add Sharp/Sortino ratio etc, different levels of risk exposure 
  
 
-## Version 2 versus 1
-V-E-C-T-O-R-I-Z-A-T-I-O-N
+## Version 2 versus version 1
 
-#Performance comparison
 
-As booting performance (speed) was the main priority in version 2.0 it is interesting to see at the actual difference.
+### Performance comparison
 
-Method
-This test was done by using datetime.now() which is considered nooby'
+Boosting performance (speed) was the main priority in version 2.0 so it is interesting to see the actual difference.
+
+#### Method
+This test was done by using datetime.now() which is sometimes considered bad practice.
+The time to run throught the script is of such a magnitude than small inaccuracies don't affect the conclusions significantly.
+
+Cons:
+It is not very exact
 
 Pros:
-*It shows an actual usecase
+It shows an actual usecase
 
-Results
 
+#### Results
+
+* Version 2 is much faster - due to vectorization of the main function
+* There is a monotonic increase in time for both versions
+* The time margin varies for both versions
+  This is because different sections of the list of stocks have different numbers of trading signals
 
 
 | Stocks tested | Version 1    | Version 2    |
