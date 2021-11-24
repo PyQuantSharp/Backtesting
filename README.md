@@ -56,6 +56,7 @@ Pros:
   This is because different sections of the list of stocks have different numbers of trading signals
 
 
+
 | Stocks tested | Version 1    | Version 2    |
 | :------------ |:------------:| ------------:|
 | 100           | 20.46        | 3.90         |
@@ -77,4 +78,8 @@ Current performance on my Lenovo T450s: Going through 1800 stocks over 5 years o
 That was getting very bothersome and now I can run the script through about 4500 stocks in ~3 minutes.
 There is no reason to go back to version 1 other than for trying to understand the deeper logic of Python.
 Performance wise it is too slow for larger datasets and version leads to exactly the same data. 
+
+
+
+
 
