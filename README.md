@@ -45,5 +45,5 @@ Results
 
 
 
-![https://ibb.co/5xsKX6c]
+![https://i.ibb.co/pr4h6xX/SR-Backtesting-speed-comparison.png]
 
