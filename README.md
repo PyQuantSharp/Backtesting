@@ -20,3 +20,34 @@ Current performance on my Lenovo T450s: Going through 1800 stocks over 5 years o
 ## Version 2 versus 1
 V-E-C-T-O-R-I-Z-A-T-I-O-N
 
+#Performance comparison
+
+As booting performance (speed) was the main priority in version 2.0 it is interesting to see at the actual difference.
+
+Method
+This test was done by using datetime.now() which is considered nooby'
+
+Pros:
+*It shows an actual usecase
+
+Results
+
+Stocks tested | Version 1 | Version 2
+-------------   ---------   ---------
+100
+200
+300
+400
+500
+600
+
+
+| Left-Aligned  | Center Aligned  | Right Aligned |
+| :------------ |:---------------:| -----:|
+| col 3 is      | some wordy text | $1600 |
+| col 2 is      | centered        |   $12 |
+| zebra stripes | are neat        |    $1 |
+
+
+
+
