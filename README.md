@@ -16,7 +16,7 @@ It was in no way optimized for speed in version 1 (see notes below) but is now q
 - [ ] 3) Add a stop loss condition (static or dynamic) to limit downside, esp. important for small cap short positions 
 - [ ] 4) Add functionality to test long trades (currently only short positions) 
 - [ ] 5) Improve the measure of volatility - currently the script uses the average of entire testperiod thus "looking ahead"
-- [ ] 6) Expand strategy evaluation - add Sharp/Sortino ratio etc, different levels of risk exposure 
+- [ ] 6) Expand strategy evaluation - add e.g. Sharp/Sortino ratio and different levels of risk exposure 
 - [ ] 7) Add dynamic position sizing based on the historic volatility of each stock
 
 ## 23-11-2021: Version 2 versus version 1
