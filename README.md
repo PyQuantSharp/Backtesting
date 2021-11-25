@@ -4,12 +4,9 @@
 
 This is for sharing ideas and for easy code sharing across forums.
 
-Currently only holding the "FadeFinder" (had to have some name) - simple backtesting script written in python. 
+Currently only holding the "FadeFinder" - a bare-bones backtesting script written in python. 
 
-It was in no way optimized for speed in version 1 (see notes below) but is now quite useful in my objectively biased opinion.
-
-## Status as of 11.11.2021 - version 1.0
-
+It was in no way optimized for speed in version 1 (see notes below) but is now quite useful.
 
 
 ## Upcoming changes in rough order of priority
@@ -22,7 +19,7 @@ It was in no way optimized for speed in version 1 (see notes below) but is now q
 - [ ] 6) Expand strategy evaluation - add Sharp/Sortino ratio etc, different levels of risk exposure 
 - [ ] 7) Add dynamic position sizing based on the historic volatility of each stock
 
-## Version 2 versus version 1
+## 23-11-2021: Version 2 versus version 1
 
 The table of individual simulated trades 'resultsdataframe' and the eponymous 'Logdataframe' have the same structure as in version 1.
 The basic plotting and logging is also kept exactly as in version 1.
@@ -75,9 +72,9 @@ Pros:
 When sharing version 1 I wrote:
 Current performance on my Lenovo T450s: Going through 1800 stocks over 5 years of daily data takes ~8 minutes.
 
-That was getting very bothersome and now I can run the script through about 4500 stocks in ~3 minutes.
-There is no reason to go back to version 1 other than for trying to understand the deeper logic of Python.
-Performance wise it is too slow for larger datasets and version leads to exactly the same data. 
+That was getting very bothersome and 2.0 runs through 4500 stocks in ~3 minutes.
+There is no reason to go back to version 1 other than for trying to understand the deeper logic behind Python.
+Performance wise it is too slow for larger datasets and version 2 leads to exactly the same data. 
 
 
 
