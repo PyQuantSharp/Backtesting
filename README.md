@@ -34,7 +34,7 @@ Boosting performance (speed) was the main priority in version 2.0 so it is inter
 
 #### Method
 This test was done by using datetime.now() which is sometimes considered bad practice.
-The time to run throught the script is of such a magnitude than small inaccuracies don't affect the conclusions significantly.
+The execution time is of such a magnitude that small inaccuracies do not affect the conclusions significantly.
 
 Cons:
 * It is not very exact
@@ -42,15 +42,15 @@ Cons:
 
 Pros:
 * It is very simple
-* It shows an actual usecase instead of teoretic aspect/part of a larger whole
+* It shows an actual usecase instead of a theoretic aspect and/or part of a larger whole
 
 
 #### Results
 
 * Version 2 is much faster - due to vectorization of the main function
-* There is a monotonic increase in time for both versions
+* There is a monotonic increase in execution time for both versions
 * The time margin varies for both versions
-  This is because different sections of the list of stocks have different numbers of trading signals
+  This happens because the number of trading signals varies between different sections of the database
 
 
 
@@ -79,4 +79,4 @@ Performance wise it is too slow for larger datasets and version 2 leads to exact
 
 
 
-
+---
