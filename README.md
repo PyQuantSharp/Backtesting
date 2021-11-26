@@ -48,9 +48,8 @@ Pros:
 #### Results
 
 * Version 2 is much faster - due to vectorization of the main function
-* There is a monotonic increase in execution time for both versions
-* The time margin varies for both versions
-  This happens because the number of trading signals varies between different sections of the database
+* There is a monotonic increase in execution time for both versions (not too much measurement variance)
+* The time margin varies for both versions - the number of trading signals varies between different sections of the database
 
 
 
