@@ -1,0 +1,105 @@
+import requests
+import pandas as pd
+import datetime
+import pytz
+import time
+import concurrent.futures
+api = 'API KEY HERE'
+
+
+
+def tickerlistcreator():
+    storagelist = []
+    status = 1
+    totalpages = 1
+
+    #Set URL for the initial request
+    url = 'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&sort=ticker&order=asc&limit=1000' + api
+
+    while status == 1:
+        response = requests.get(url)
+
+        for item in response.json()['results']:
+            storagelist.append(item['ticker'])
+
+        if "next_url" in response.json():
+            url = response.json()['next_url'] + api
+            totalpages += 1
+        else:
+            status = 0
+
+    print('total pages of symbols: ', totalpages)
+    return(storagelist)
+
+
+def stockdownloader(stock, startdate, enddate):
+    url = ('https://api.polygon.io/v2/aggs/ticker/%s/range/1/day/%s/%s?adjusted=true&sort=asc&limit=1000' %(stock,startdate,enddate)) + api
+
+    status = 1
+    totalpages = 1
+
+    while status == 1:
+        response = requests.get(url)
+
+        try:
+            '''with concurrent.futures.ThreadPoolExecutor() as executor:
+                executor.map(innerfunction,response,stock)'''
+            innerfunction(response, stock)
+
+        except:
+            print("Error with stock:", stock)
+
+        if "next_url" in response.json():
+            url = response.json()['next_url'] + api
+            totalpages += 1
+        else:
+            status = 0
+
+
+    print('total pages of stock data: ', totalpages)
+
+
+def innerfunction(response, stock):
+    json_list = []
+
+
+    for item in response.json()['results']:
+        date = datetime.datetime.fromtimestamp(item['t'] / 1000, tz=pytz.timezone('America/New_York')).date()
+        ticker = response.json()['ticker']
+
+        marketcapresponse = requests.get('https://api.polygon.io/vX/reference/tickers/%s?date=%s&apiKey=p7YmJp6VUZkyk1dfsv7DVbs5yyDloGdU' % (stock, date))
+        marketcap = marketcapresponse.json()['results']['market_cap']
+
+
+        json_element = {
+            'date': date,
+            'ticker': ticker,
+            'open': item['o'],
+            'high': item['h'],
+            'low': item['l'],
+            'close': item['c'],
+            'marketcap': marketcap }
+
+        json_list.append(json_element)
+
+    df = pd.DataFrame(json_list)
+    print(df)
+
+
+#------- RUNNING FUNCTIONS -------
+
+#Define test universe
+tickerlist = tickerlistcreator()
+
+print("First 10 tickers: ", tickerlist[0:10])
+print("Total number of tickers is: ", len(tickerlist))
+
+starttime = time.perf_counter()
+
+#Download data - the main function - set currently to just use the first ticker
+for stock in tickerlist[0:5]:
+    stockdownloader(stock, '2021-12-01','2021-12-31')
+
+
+endtime = time.perf_counter()
+print("Total runtime: ", endtime-starttime)
