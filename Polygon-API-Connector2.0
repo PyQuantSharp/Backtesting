@@ -44,8 +44,10 @@ def stockdownloader(stock, startdate, enddate):
 
         try:
             #Run with threading
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                executor.submit(innerfunction,response,stock)
+            with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+                future = executor.submit(innerfunction,response,stock)
+                print(future.result())
+
             #Run without threading
             #innerfunction(response, stock)
 
