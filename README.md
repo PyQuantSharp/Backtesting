@@ -26,7 +26,7 @@ The basic plotting and logging is also kept exactly as in version 1.
 
 The easy solution here would have been to make it quite different, but setting it up in this way makes for easy comparison.
 
-The different lies in the main function which leads to...
+The difference lies in the main function which leads to...
 
 ### Performance comparison
 
