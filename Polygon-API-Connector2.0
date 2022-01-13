@@ -72,7 +72,7 @@ def innerfunction(response, stock):
         date = datetime.datetime.fromtimestamp(item['t'] / 1000, tz=pytz.timezone('America/New_York')).date()
         ticker = response.json()['ticker']
 
-        marketcapresponse = requests.get('https://api.polygon.io/vX/reference/tickers/%s?date=%s&apiKey=p7YmJp6VUZkyk1dfsv7DVbs5yyDloGdU' % (stock, date))
+        marketcapresponse = requests.get('https://api.polygon.io/vX/reference/tickers/%s?date=%s' % (stock, date))
         marketcap = marketcapresponse.json()['results']['market_cap']
 
 
