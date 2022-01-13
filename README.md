@@ -69,11 +69,11 @@ Pros:
 #### The effect of this in actual use
 
 When sharing version 1 I wrote:
-Current performance on my Lenovo T450s: Going through 1800 stocks over 5 years of daily data takes ~8 minutes.
+"Current performance on my Lenovo T450s: Going through 1800 stocks over 5 years of daily data takes ~8 minutes."
 
 That was getting very bothersome and 2.0 runs through 4500 stocks in ~3 minutes.
 There is no reason to go back to version 1 other than for trying to understand the deeper logic behind Python.
-Performance wise it is too slow for larger datasets and version 2 leads to exactly the same data. 
+Performance wise it is too slow for larger datasets and version 2 leads to the exact same data. 
 
 
 
