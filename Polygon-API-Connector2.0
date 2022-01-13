@@ -6,7 +6,7 @@ import time
 import concurrent.futures
 api = 'API KEY HERE'
 
-
+dflist = []
 
 def tickerlistcreator():
     storagelist = []
@@ -32,6 +32,7 @@ def tickerlistcreator():
     return(storagelist)
 
 
+
 def stockdownloader(stock, startdate, enddate):
     url = ('https://api.polygon.io/v2/aggs/ticker/%s/range/1/day/%s/%s?adjusted=true&sort=asc&limit=1000' %(stock,startdate,enddate)) + api
 
@@ -42,9 +43,11 @@ def stockdownloader(stock, startdate, enddate):
         response = requests.get(url)
 
         try:
-            '''with concurrent.futures.ThreadPoolExecutor() as executor:
-                executor.map(innerfunction,response,stock)'''
-            innerfunction(response, stock)
+            #Run with threading
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                executor.submit(innerfunction,response,stock)
+            #Run without threading
+            #innerfunction(response, stock)
 
         except:
             print("Error with stock:", stock)
@@ -55,8 +58,8 @@ def stockdownloader(stock, startdate, enddate):
         else:
             status = 0
 
-
     print('total pages of stock data: ', totalpages)
+
 
 
 def innerfunction(response, stock):
@@ -82,9 +85,9 @@ def innerfunction(response, stock):
 
         json_list.append(json_element)
 
-    df = pd.DataFrame(json_list)
-    print(df)
-
+    dflist.append(pd.DataFrame(json_list) )
+    dflist.append("test")
+    #print(df)
 
 #------- RUNNING FUNCTIONS -------
 
@@ -97,8 +100,8 @@ print("Total number of tickers is: ", len(tickerlist))
 starttime = time.perf_counter()
 
 #Download data - the main function - set currently to just use the first ticker
-for stock in tickerlist[0:5]:
-    stockdownloader(stock, '2021-12-01','2021-12-31')
+for stock in tickerlist[0:1]:
+    stockdownloader(stock, '2021-06-01','2021-12-31')
 
 
 endtime = time.perf_counter()
