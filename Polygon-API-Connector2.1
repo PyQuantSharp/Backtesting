@@ -6,7 +6,6 @@ import time
 import concurrent.futures
 api = 'API HERE'
 
-dflist = []
 
 def tickerlistcreator():
     storagelist = []
@@ -70,20 +69,17 @@ def stockdownloader(stock, startdate, enddate):
         storage.append(future.result())
         # print(future.result())
 
-    print("storage her: ", storage)
-
     df = pd.DataFrame(storage)
     print("dataframe her: ", df)
 
-    # print("df based on 'futures' list: ", df)
+    # print("df lavet ud fra 'futures' listen: ", df)
     # print('total pages of stock data: ', totalpages)
 
 
 def innerfunction(response, stock, item):
-    results = response.json()['results']
 
-    # date = datetime.datetime.fromtimestamp(results['t'] / 1000, tz=pytz.timezone('America/New_York')).date() # OBS "results" indsat
-    date = '2021-01-01'
+    date = datetime.datetime.fromtimestamp(item['t'] / 1000, tz=pytz.timezone('America/New_York')).date()
+    #date = '2021-01-01'
 
     ticker = response.json()['ticker']
 
@@ -99,14 +95,8 @@ def innerfunction(response, stock, item):
         'close': item['c'],
         'marketcap': marketcap}
 
-    # json_list.append(json_element)
-    # print("json_list testprint here: ", json_element)
     return (json_element)
 
-    # dflist.append(pd.DataFrame(json_list) )
-    # dflist.append("test")
-    # df = pd.DataFrame(json_list)
-    # print(df)
 
 
 #------- RUNNING FUNCTIONS -------
