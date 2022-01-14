@@ -75,7 +75,7 @@ def stockdownloader(stock, startdate, enddate):
     df = pd.DataFrame(storage)
     print("dataframe her: ", df)
 
-    # print("df lavet ud fra 'futures' listen: ", df)
+    # print("df based on 'futures' list: ", df)
     # print('total pages of stock data: ', totalpages)
 
 
@@ -100,7 +100,7 @@ def innerfunction(response, stock, item):
         'marketcap': marketcap}
 
     # json_list.append(json_element)
-    # print("json_list testprint her: ", json_element)
+    # print("json_list testprint here: ", json_element)
     return (json_element)
 
     # dflist.append(pd.DataFrame(json_list) )
