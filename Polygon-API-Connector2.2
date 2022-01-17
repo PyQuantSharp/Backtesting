@@ -1,0 +1,127 @@
+import requests
+import pandas as pd
+import datetime
+import pytz
+import time
+import concurrent.futures
+api = 'API KEY HERE'
+
+def tickerlistcreator():
+    storagelist = []
+    status = 1
+    totalpages = 1
+
+    #Set URL for the initial request
+    url = 'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&sort=ticker&order=asc&limit=1000' + api
+
+    while status == 1:
+        response = requests.get(url)
+
+        for item in response.json()['results']:
+            storagelist.append(item['ticker'])
+
+        if "next_url" in response.json():
+            url = response.json()['next_url'] + api
+            totalpages += 1
+        else:
+            status = 0
+
+    print('total pages of ticker symbols: ', totalpages)
+    return(storagelist)
+
+
+def stockdownloader(stock, startdate, enddate):
+    url = ('https://api.polygon.io/v2/aggs/ticker/%s/range/1/day/%s/%s?adjusted=true&sort=asc&limit=1000' % (
+    stock, startdate, enddate)) + api
+
+    status = 1
+    totalpages = 1
+
+    storage = []
+
+    while status == 1:
+        response = requests.get(url)
+
+        try:
+
+            # Run with threading - without map
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                futures = []
+                for item in response.json()['results']:
+                    futures.append(executor.submit(innerfunction, response,stock,item) )
+
+                for future in concurrent.futures.as_completed(futures):
+                    storage.append(future.result())
+
+            # Run with threading - with map - currently not working
+            '''
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                list = [response.json()['results']]
+
+                futures = executor.map(innerfunction, list)
+                storage.append(executor.map(innerfunction(response,stock, "test"), list) )
+
+                for future in storage:
+                    print(future)
+            '''
+
+            # Run without threading
+            '''
+            for item in response.json()['results']:
+                storage.append(innerfunction(response,stock,item))
+            '''
+
+        except:
+            print("Error with stock:", stock)
+
+        if "next_url" in response.json():
+            url = response.json()['next_url'] + api
+            totalpages += 1
+        else:
+            status = 0
+
+    df = pd.DataFrame(storage)
+    print("dataframe print: ", df)
+    # print('total pages of stock data: ', totalpages)
+
+
+def innerfunction(response, stock, item):
+
+    date = datetime.datetime.fromtimestamp(item['t'] / 1000, tz=pytz.timezone('America/New_York')).date()
+
+    ticker = response.json()['ticker']
+
+    marketcapresponse = requests.get('https://api.polygon.io/vX/reference/tickers/%s?date=%s' % (stock, date) + api)
+    marketcap = marketcapresponse.json()['results']['market_cap']
+
+    json_element = {
+        'date': date,
+        'ticker': ticker,
+        'open': item['o'],
+        'high': item['h'],
+        'low': item['l'],
+        'close': item['c'],
+        'marketcap': marketcap}
+
+    return (json_element)
+
+
+
+#------- RUNNING FUNCTIONS -------
+
+#Define test universe
+tickerlist = tickerlistcreator()
+
+print("First 10 tickers: ", tickerlist[0:10])
+print("Total number of tickers is: ", len(tickerlist))
+
+starttime = time.perf_counter()
+
+#Download data - the main function - set currently to just use the first ticker
+for stock in tickerlist[0:1]:
+    stockdownloader( stock, '2021-01-01', '2021-12-31')
+
+
+
+endtime = time.perf_counter()
+print("Total runtime: ", endtime-starttime)
