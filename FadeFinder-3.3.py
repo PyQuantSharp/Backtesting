@@ -32,7 +32,7 @@ except:
     logging.critical("Database not accessible currently")
 
 # Define ticker_list from pickle file
-path = r"C:\Users\Simon\OneDrive\01 Data Partition\04 Programmering\04 Python Programmering\PycharmProjects\SR-Polygon\SR-Downloading-Scripts\tickerlist.pkl"
+path = INSERT PATH
 with open(path, "rb") as f:
     ticker_list = list(pickle.load(f))
 
@@ -348,7 +348,7 @@ try:
     current_time = datetime.datetime.now().strftime("%d.%m.%Y-%H.%M.%S")
 
     # needs to backslashes at the end - to escape the final backslash
-    folder_path = r"C:\Users\Simon\OneDrive\01 Data Partition\04 Programmering\04 Python Programmering\PycharmProjects\SR-Polygon\FadeFinder\Output filer\\"
+    folder_path = INSERT PATH
 
     with pd.ExcelWriter(f"{folder_path}FadeFinderOutput_{current_time}.xlsx") as writer:
         resultsdataframe.to_excel(writer, index=False)
