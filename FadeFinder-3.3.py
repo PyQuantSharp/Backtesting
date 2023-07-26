@@ -17,7 +17,7 @@ import concurrent.futures
 import cProfile
 import pstats
 
-logging.basicConfig(level=logging.DEBUG) # possible values include: "DEBUG", "CRITICAL" (always in caps)
+logging.basicConfig(level=logging.CRITICAL) # possible values include: "DEBUG", "CRITICAL" (always in caps)
 pd.set_option("display.max_rows", 1000, "display.min_rows", 200, "display.max_columns", None, "display.width", None)
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -31,15 +31,19 @@ try:
 except:
     logging.critical("Database not accessible currently")
 
-# Define ticker_list from pickle file
-path = INSERT PATH
+# Define ticker_list from pickle file + sort it so the order is unchanged between runs of this script
+path = r"C:\Users\Simon\OneDrive\01 Data Partition\04 Programmering\04 Python Programmering\PycharmProjects\SR-Polygon\SR-Downloading-Scripts\tickerlist.pkl"
 with open(path, "rb") as f:
     ticker_list = list(pickle.load(f))
+    ticker_list.sort()
 
 
 # 3 -------------------- Parameters for the backtest---------------------
-startdate = "2023-05-19"
-enddate = "2023-12-31"
+#used to have both startdate and enddate in string form - why?
+startdate = datetime.datetime.strptime("2018-01-01",'%Y-%m-%d').date()
+enddate = datetime.date.today()
+#enddate = datetime.date.today().strftime('%Y-%m-%d')
+
 Signalperiod = "gap"  #"gap" / "day"
 Exposure = 0.1  #percentage of portfolio to use for each trade
 Fees = 0.000  #Percentage - 1=100% - Currently 0 and added/adjusted in Jupyter Notebook
@@ -77,9 +81,6 @@ MarketCapSetting = 999_000_000
 def TradeFunctionIntraday(stock, date): #takes a stock symbol (string) and a datetime instance
     logging.debug(f"Starting intraday function for ticker: {stock}")
 
-    # possibly need to remove the time part of date (Timestamp format)
-    date = date.date()
-
     # set up df from intraday postgresql table
     query= f""" SELECT * FROM intraday WHERE "Stock" = '{stock}' AND
       ("Time" AT TIME ZONE 'US/Eastern')::timestamp::date = '{date}'::date; """
@@ -102,10 +103,9 @@ def TradeFunctionIntraday(stock, date): #takes a stock symbol (string) and a dat
 
     PremarketTotalVolume = df[PreMarketMask]['Volume'].sum()
 
-    # Check if PreVolume is above some threshold - if not: nan values are passed
-    #To-do - the function should just exit here and move on to the next ticker
+    # Check if PreVolume is above threshold - if not the script moves on to the next daily signal
     if PremarketTotalVolume < PreVolSetting:
-        return (np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan)
+        return None
 
     else:
         PremarketHigh = df[PreMarketMask]['High'].max()
@@ -138,15 +138,16 @@ resultspartialdataframes = []  # storage list to build 'resultsdataframe' from
 failedstocks = []  # storage list symbols of stocks with data errors
 failedstocks_intraday = []
 
-
 def TradeFunctionDaily(stock): # columns in DB Daily -> check excel file for column definitions
-    # Initialize dataframe with daily data
-    query = f'SELECT * FROM daily WHERE UPPER("Stock") = \'{stock}\' '
+    logging.debug(f"starting TradeFunctionDaily for {stock}")
+
+    # Initialize dataframe with daily data -
+    query = f"SELECT * FROM daily WHERE UPPER(\"Stock\") = '{stock}' AND \"Date\" BETWEEN '{startdate}' AND '{enddate}'"
+
     df = pd.read_sql_query(query, con=engine)
     df = df.sort_values(by="Date")
 
-    # Apply test period settings
-    df = df[(df['Date'] >= startdate) & (df['Date'] <= enddate)]
+    logging.debug(f"test 2 for {stock}")
 
     # Define booleans for checks that are invariant between long/short test
     DollarVolParam = df.Volume.shift(1) > DollarVolSetting
@@ -161,6 +162,12 @@ def TradeFunctionDaily(stock): # columns in DB Daily -> check excel file for col
         PriceChangeParam = (((df.Open - df.Close.shift(1)) / df.Close.shift(1)) * 100 ) > PriceChangeSetting
         # Check that the prior trading day is less than 5 days back - to avoid 'relisted' stocks on day 1
         DaysBreakParam = np.where(PriceChangeParam, (df.Date-df.Date.shift(1)) < datetime.timedelta(days=7), False)
+
+    df["PriceChangeParam"] = np.where(PriceChangeParam, 1, 0)
+    df["VolumeParam"] = np.where(VolumeParam, 1, 0)
+    df["SharePriceParam"] = np.where(SharePriceParam, 1, 0)
+    df["MarketCapParam"] = np.where(MarketCapParam, 1, 0)
+    df["DaysBreakParam"] = np.where(DaysBreakParam, 1, 0)
 
     #Define combined filter condition for tradesignal and flag all days with a signal
     TradeSignalParam = (PriceChangeParam & VolumeParam & SharePriceParam & MarketCapParam & DaysBreakParam) == True
@@ -194,38 +201,53 @@ def TradeFunctionDaily(stock): # columns in DB Daily -> check excel file for col
     df["OvernightTrade"] = np.where(TradeSignalParam, (df["Overnight"] -Fees)* Exposure,0)
     df["2DayTrade"] = np.where(TradeSignalParam, (df["2Day"] - Fees) * Exposure, 0)
 
+    #To inspect the result of each parameter, check the full dataframe - currently disabled
+    #logging.debug(df)
+
+    #Set up a new dataframe for only the days giving a trade signal
     df_tradesignals = df[df.TradeSignal == 1]
+
+    #logging.debug(df_tradesignals)
 
     #Add intraday data
     if len(df_tradesignals) > 0:
+        logging.debug(f"There are trade signals")
+
         try:
-            df_tradesignals[['PreVolume','PreHigh','PreBreakTime','HODTime','Price935','Price945','Price1000','Price1100','Price1300','Price1500', 'Price1530', 'Price1600']] = \
-                df_tradesignals.apply(lambda x: TradeFunctionIntraday(x['Stock'], x['Date']), axis=1, result_type='expand')
+            #Call intraday function and store the return value(s)
 
-            #Calculating the column here - when prev day is still avail. -  more robust when doing it based on the daily data than intraday
-            df_tradesignals['Open/PreHigh'] = df_tradesignals['GapSize'] / ( ((df_tradesignals['PreHigh']/df_tradesignals['PrevDayClose'])-1)*100 )
 
-            df_tradesignals['PreRVOL'] = df_tradesignals['PreVolume'] / df_tradesignals["AvgVolume10D"] #obs denne bruger en kolonne der ikke optræder eksplicit her i scriptet
+            intraday_col_names = ['PreVolume','PreHigh','PreBreakTime','HODTime','Price935','Price945','Price1000','Price1100','Price1300','Price1500', 'Price1530', 'Price1600']
+
+            # x represents each row
+            df_tradesignals[intraday_col_names] = df_tradesignals.apply(lambda x: TradeFunctionIntraday(x['Stock'], x['Date']) or [None]*12, axis=1, result_type='expand')
+
+            # filter out tradesignals with insufficient premarket volume
+            df_tradesignals = df_tradesignals[df_tradesignals["PreVolume"].notnull()]
+
+            # Calculating the column here - when prev day is still avail. -  more robust when doing it based on the daily data than intraday
+            df_tradesignals['Open/PreHigh'] = df_tradesignals['GapSize'] / (((df_tradesignals['PreHigh'] / df_tradesignals['PrevDayClose']) - 1) * 100)
+
+            df_tradesignals['PreRVOL'] = df_tradesignals['PreVolume'] / df_tradesignals[
+                "AvgVolume10D"]  # obs denne bruger en kolonne der ikke optræder eksplicit her i scriptet
 
             # Add all trading signals to temporary storage
             resultspartialdataframes.append(df_tradesignals)
 
         except Exception as e:
-            logging.critical(f"failed to add intraday data for stock {stock}")
             logging.critical(e)
+            logging.critical(f"failed to add intraday data for stock {stock}")
             failedstocks_intraday.append(stock)
-            df_tradesignals[['PreVolume','PreHigh','PreBreakTime','HODTime','Price935','Price945','Price1000','Price1100','Price1300','Price1500', 'Price1530', 'Price1600']] = np.nan
 
     else:
+        logging.debug(f"No trade signals for stock: {stock}")
         pass
-        #print("No trade signals for stock: ", stock)
-
 
 
 # 5 ------------------------- Initiate the backtest ------------------------
 
 # Testing partial list is effective for testing and for runtime estimation
-#ticker_list = ticker_list[0:50]
+ticker_list = ticker_list[0:100]
 
 timemeasure = time.perf_counter()
 
@@ -243,11 +265,10 @@ stats.sort_stats(pstats.SortKey.TIME)
 stats.print_stats()
 '''
 
-
 # 6 ---------------------Set up  dataframe for results----------------------------
 
 #create 'resultsdataframe'
-if len(resultspartialdataframes) > 1:
+if len(resultspartialdataframes) > 0:
     resultsdataframe = pd.concat(resultspartialdataframes, ignore_index=True)
 elif (len(resultspartialdataframes)) < 1:
     print("There are no instances in the analysis results. Exiting script early.")
@@ -257,6 +278,7 @@ else:
 
 #Remove instances with too low PreVolume - they are all currently set to NaN
 #this can be skipped if/when the intraday function is changed to exit tickers with too low PreVolume
+#if resultsdataframe
 resultsdataframe = resultsdataframe[~resultsdataframe.PreVolume.isna()]
 
 #Sort resultsdataframe by date - to reflect correlation between stocks (for equity curve)
@@ -325,7 +347,7 @@ except Exception as e:
 # 8 --------------------------------- Results analysis ------------------------------
 
 #Print first 20 lines of resultsdataframe
-print("resultsdataframe: \n",resultsdataframe.tail(10))
+print("resultsdataframe: \n",resultsdataframe.tail(15))
 
 #Print the dataframe holding parameter settings and results
 print("\n", Logdataframe.to_string(index=False))
@@ -348,7 +370,7 @@ try:
     current_time = datetime.datetime.now().strftime("%d.%m.%Y-%H.%M.%S")
 
     # needs to backslashes at the end - to escape the final backslash
-    folder_path = INSERT PATH
+    folder_path = r"C:\Users\Simon\OneDrive\01 Data Partition\04 Programmering\04 Python Programmering\PycharmProjects\SR-Polygon\FadeFinder\Output filer\\"
 
     with pd.ExcelWriter(f"{folder_path}FadeFinderOutput_{current_time}.xlsx") as writer:
         resultsdataframe.to_excel(writer, index=False)
